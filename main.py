@@ -16,5 +16,5 @@ m_solved = gauss_jordan(m)
 
 
 print(f"Inicio:\n{m}")
-print(m_solved.Procedure)
+# print(m_solved.Procedure)
 print(f"Fin:\n{m_solved}")

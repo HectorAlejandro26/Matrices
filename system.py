@@ -141,6 +141,16 @@ class Linear:
 
             out += spaces + eitem_str + "│\n"
 
+        row_len = len(out.split("\n")[0]) - 2
+        divisor = out.split("\n")[0].index("┊")
+        aux1 = ("┌" + " " * row_len + "┐\n")
+        aux1 = aux1[:divisor] + "╷" + aux1[divisor + 1:]
+        out = aux1 + out
+
+        aux2 = "└" + " " * row_len + "┘\n"
+        aux2 = aux2[:divisor] + "╵" + aux2[divisor + 1:]
+        out += aux2
+
         return out
 
 
