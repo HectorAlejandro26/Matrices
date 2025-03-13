@@ -1,7 +1,9 @@
 from system import (
+    Matrix,
     Linear,
     _Linear_Solved,
     addition_list as addition,
+    _simplify_type as simplify
 )
 from fractions import Fraction
 
@@ -10,6 +12,12 @@ def gauss_jordan(linear_sys: Linear):
     # Copia de la matriz original
     # para evitar modificar la matriz original
     linear = linear_sys.__copy__()
+
+    if isinstance(linear, _Linear_Solved):
+        return linear
+    elif not isinstance(linear, Linear):
+        raise TypeError("El argumento debe ser de tipo Linear.")
+
     step_count = 1
     procedure = ""
 

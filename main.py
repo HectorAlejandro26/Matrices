@@ -1,20 +1,14 @@
-from system import Linear
+from system import Linear, Matrix
 from logic import gauss_jordan
 
-m, e = [
-    [1, 1, 1],
-    [3, 2, 1],
-    [4, 3, 1]
-], [
-    60,
-    95,
-    125
-]
+m = Matrix([
+    [1, 4, 7, 8, 5],
+    [2, 3, 6, 9, 1],
+    [4, 7, 8, 5, 2],
+    [3, 6, 9, 1, 4],
+    [7, 8, 5, 2, 3]
+])
 
-m: Linear = Linear(m, e)
-m_solved = gauss_jordan(m)
+print(m)
 
-
-print(f"Inicio:\n{m}")
-# print(m_solved.Procedure)
-print(f"Fin:\n{m_solved}")
+print(f"Det = {m.det}")
