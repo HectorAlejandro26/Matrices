@@ -19,7 +19,7 @@ def _simplify_type(value: int | float | Fraction) -> int | Fraction:
         raise TypeError()
 
 
-def addition_list(l1: list[int | Fraction], l2: list[int | Fraction]):
+def _addition_list(l1: list[int | Fraction], l2: list[int | Fraction]):
     if len(l1) != len(l2):
         raise ValueError("Listas son de diferente tamaño.")
 

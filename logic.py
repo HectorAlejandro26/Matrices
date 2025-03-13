@@ -2,7 +2,7 @@ from system import (
     Matrix,
     Linear,
     _Linear_Solved,
-    addition_list as addition,
+    _addition_list as addition,
     _simplify_type as simplify
 )
 from fractions import Fraction
