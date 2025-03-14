@@ -32,6 +32,9 @@ class Matrix:
     def __init__(self, m: _Matrix):
         self.Matrix = m
 
+    def to_linear(self, equals_to: _List):
+        return Linear(self.Matrix, equals_to)
+
     @property
     def Matrix(self): return self.__Matrix
 
@@ -253,6 +256,34 @@ class Linear(Matrix):
     def scale_col(self, index: int, scalar: int | float | Fraction) -> _List:
         return [self.scale_item((ir, index), scalar) for ir in range(self.n_rows)]
 
+    def cramer(self):
+        m = self.__copy__()
+        det = m.det
+        procedure = f"|A| = {det}\n\n"
+        if det == 0:
+            raise ValueError("El determinante es 0.")
+
+        results = []
+        procedure_end = ""
+        for i in range(m.n_cols):
+            m2 = m.__copy__()
+            m2.set_col(i, m.EqualsTo)
+            new_det = m2.det
+            procedure += f"|A_{ascii_lowercase[i]}| = {new_det}\n"
+            results.append(
+                _simplify_type(
+                    Fraction(new_det, det)
+                )
+            )
+
+            procedure_end += f"{ascii_lowercase[i]} = ({new_det})/({det}) = {results[-1]}\n"
+
+        for i in range(m.n_cols):
+            m.set_col(i, [0, 0, 0])
+            m.set_item((i, i), 1)
+
+        return _Linear_Solved(m.Matrix, results, f"{procedure}\n{procedure_end}")
+
     def __copy__(self):
         return Linear(deepcopy(self.Matrix), deepcopy(self.__EqualsTo))
 
@@ -290,7 +321,7 @@ class Linear(Matrix):
 class _Linear_Solved(Linear):
     __procedure: str
 
-    def __init__(self, m: _Matrix, s: _List, procedure):
+    def __init__(self, m: _Matrix, s: _List, procedure: str = ""):
         super().__init__(m, s)
         self.__validate_solved()
         self.__procedure = procedure
@@ -305,6 +336,8 @@ class _Linear_Solved(Linear):
 
     @property
     def Procedure(self): return self.__procedure
+
+    def _procedure_clear(self): self.__procedure = ""
 
     def __copy__(self):
         return _Linear_Solved(

@@ -1,14 +1,15 @@
 from system import Linear, Matrix
 from logic import gauss_jordan
 
-m = Matrix([
-    [1, 4, 7, 8, 5],
-    [2, 3, 6, 9, 1],
-    [4, 7, 8, 5, 2],
-    [3, 6, 9, 1, 4],
-    [7, 8, 5, 2, 3]
-])
+matrix = [
+    [4, 13, -4],
+    [4, -5, 2],
+    [25, 21, -32]
+]
+eq = [75, 65, 10]
 
-print(m)
+linear = Linear(matrix, eq)
 
-print(f"Det = {m.det}")
+res = linear.cramer()
+
+print(res.Procedure)
