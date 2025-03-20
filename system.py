@@ -263,26 +263,83 @@ class Linear(Matrix):
         if det == 0:
             raise ValueError("El determinante es 0.")
 
+        string_index = ascii_lowercase.find(
+            "x") if len(self.EqualsTo) < 4 else 0
+
         results = []
         procedure_end = ""
         for i in range(m.n_cols):
             m2 = m.__copy__()
             m2.set_col(i, m.EqualsTo)
+            procedure += f"M_{ascii_lowercase[string_index + i]}:\n{m2}"
             new_det = m2.det
-            procedure += f"|A_{ascii_lowercase[i]}| = {new_det}\n"
+            procedure += f"|M_{ascii_lowercase[string_index + i]}| = {new_det}\n\n"
             results.append(
                 _simplify_type(
                     Fraction(new_det, det)
                 )
             )
 
-            procedure_end += f"{ascii_lowercase[i]} = ({new_det})/({det}) = {results[-1]}\n"
+            procedure_end += f"{ascii_lowercase[string_index + i]} = ({new_det})/({det})\n"
 
         for i in range(m.n_cols):
-            m.set_col(i, [0, 0, 0])
+            m.set_col(i, [0 for _ in range(m.n_cols)])
             m.set_item((i, i), 1)
 
-        return _Linear_Solved(m.Matrix, results, f"{procedure}\n{procedure_end}")
+        return _Linear_Solved(m.Matrix, results, f"{procedure}{procedure_end}")
+
+    def gauss_jordan(self):
+        linear = self.__copy__()
+        if isinstance(linear, _Linear_Solved):
+            return linear
+        elif not isinstance(linear, Linear):
+            raise TypeError("El argumento debe ser de tipo Linear.")
+
+        step_count = 1
+        procedure = ""
+        for i in range(linear.n_rows):
+            aux = linear.get_item((i, i))
+
+            if aux == 0:
+                row = linear.get_row(i)
+                if all(x == 0 for x in row[0]) and row[1] != 0:
+                    raise ValueError(
+                        f"El sistema es inconsistente. Fila {i} es contradictoria.")
+                continue
+
+            aux = Fraction(1, aux)
+
+            # Convertir elementos parte de la diagonal a 1
+            new_ri, new_ei = linear.scale_row(i, aux)
+            linear.set_row(i, new_ri, new_ei)
+
+            # Porcedimiento...
+            procedure += f"Paso {step_count}:\n{aux}F_{i+1} -> F_{i+1}\n"
+            step_count += 1
+
+            for j in range(linear.n_rows):
+                if i != j:  # No modificar la diagonal de 1
+                    factor = -linear.get_item((j, i))  # Elemento por hacer 0
+                    if factor == 0:  # Para ahorrar pasos
+                        continue
+                    new_rj, new_ej = linear.scale_row(
+                        i, factor)  # (-factor)F_i
+                    old_rj, old_ej = linear.get_row(j)  # Fila original
+
+                    # Sumar fila escalada a la fila j
+                    new_rj = _addition_list(new_rj, old_rj)
+                    new_ej += old_ej
+
+                    # Colocamos el resultado en la matriz
+                    linear.set_row(j, new_rj, new_ej)
+
+                    # Porcedimiento...
+                    procedure += f"Paso {step_count}:\n{factor}F_{i+1} + F_{j+1} -> F_{j+1}\n"
+                    procedure += str(linear) + ('\n' if j != linear.n_rows -
+                                                1 and i != linear.n_rows - 1 else "")
+                    step_count += 1
+
+        return _Linear_Solved(linear.Matrix, linear.EqualsTo, procedure)
 
     def __copy__(self):
         return Linear(deepcopy(self.Matrix), deepcopy(self.__EqualsTo))
