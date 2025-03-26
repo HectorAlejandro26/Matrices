@@ -1,4 +1,4 @@
-import re
+from re import sub
 from sympy import Eq, symbols, linear_eq_to_matrix, Float
 from string import ascii_lowercase
 from fractions import Fraction
@@ -38,8 +38,8 @@ def get_linear_system(input_str: str) -> tuple[list[list[int | Fraction]], list[
             if not left or not right:
                 raise ValueError(f"Ecuación \"{eq}\" inválida")
 
-            left = re.sub(r"(\d)([a-zA-Z])", r"\1*\2", left)
-            right = re.sub(r"(\d)([a-zA-Z])", r"\1*\2", right)
+            left = sub(r"(\d)([a-zA-Z])", r"\1*\2", left)
+            right = sub(r"(\d)([a-zA-Z])", r"\1*\2", right)
 
             left_eq = eval(left, {v: symbols(v) for v in vars_str})
             right_eq = eval(right, {v: symbols(v) for v in vars_str})
