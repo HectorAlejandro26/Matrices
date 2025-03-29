@@ -1,10 +1,6 @@
-from functions import get_linear_system
 from colorama import Fore
-from system import (
-    Matrix,
-    Linear,
-    _Linear_Solved
-)
+from Matrix import get_linear_system, Linear, _Linear_Solved
+
 reset = Fore.RESET
 msg = Fore.LIGHTCYAN_EX
 option = Fore.RESET
